@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confirmation API Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .response {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .response.success {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .response.error {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        .info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #1565c0;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✉️ Email Confirmation API</h1>
+        <p class="subtitle">Test the Evangadi Forum email confirmation endpoint</p>
+
+        <div class="info">
+            <strong>Endpoint:</strong> POST /api/auth/confirm-email<br>
+            <strong>Base URL:</strong> http://localhost:5004<br>
+            <strong>Purpose:</strong> Activate user account via confirmation token
+        </div>
+
+        <div class="section">
+            <div class="section-title">1. Confirmation Token</div>
+            <textarea id="token" placeholder="Paste JWT confirmation token here...">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdXJwb3NlIjoiY29uZmlybS1lbWFpbCIsInVzZXJJZCI6NywiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzgxNDgwNDU2LCJleHAiOjE3ODE1NjY4NTZ9.qKqXtUoJCozCXCb_pfLyD8YnZbd5kI3xBQvzm_c1Xik</textarea>
+        </div>
+
+        <div class="section">
+            <button onclick="sendConfirmation()">Send Confirmation Request</button>
+            <div id="response"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📋 How it works:</div>
+            <ul style="color: #666; font-size: 13px; line-height: 1.8; margin-left: 20px;">
+                <li>User registers with email</li>
+                <li>Backend creates unverified user (is_verified = 0)</li>
+                <li>Confirmation token sent in email link or displayed on screen</li>
+                <li>User clicks link → token sent to this endpoint</li>
+                <li>Backend validates token and marks user as verified (is_verified = 1)</li>
+                <li>User can now sign in</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function sendConfirmation() {
+            const token = document.getElementById('token').value.trim();
+            const responseDiv = document.getElementById('response');
+
+            if (!token) {
+                responseDiv.innerHTML = '<div class="response error">❌ Error: Token cannot be empty</div>';
+                return;
+            }
+
+            try {
+                responseDiv.innerHTML = '<div class="response">⏳ Sending request...</div>';
+
+                const response = await fetch('http://localhost:5004/api/auth/confirm-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `<div class="response success">✅ Success!\n\n${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    responseDiv.innerHTML = `<div class="response error">❌ Error (${response.status})\n\n${JSON.stringify(data, null, 2)}</div>`;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">❌ Request failed\n\n${error.message}</div>`;
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('token').addEventListener('keydown', (e) => {
+            if (e.metaKey && e.key === 'Enter') sendConfirmation();
+        });
+    </script>
+</body>
+</html>
