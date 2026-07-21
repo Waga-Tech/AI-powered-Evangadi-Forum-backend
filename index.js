@@ -12,7 +12,6 @@ import { errorHandler } from "./src/middleware/error-handler.js";
 import { initAuthTables } from "./src/api/auth/service/auth.service.js";
 
 const app = express();
-
 // Render (and most PaaS platforms) sit behind a reverse proxy.
 // This tells Express to trust the X-Forwarded-For header so
 // express-rate-limit can correctly identify client IPs.
