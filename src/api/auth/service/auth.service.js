@@ -133,7 +133,7 @@ export const registerService = async ({
     process.env.EMAIL_CONFIRM_EXPIRES_IN || '24h',
   );
 
-  const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5001'}/auth?confirmToken=${encodeURIComponent(confirmationToken)}`;
+  const confirmationUrl = `${process.env.FRONTEND_URL || "https://ai-powered-forum.yodhub.com"}/auth?confirmToken=${encodeURIComponent(confirmationToken)}`;
   if (process.env.NODE_ENV !== 'production') {
     console.info('[dev] Email confirmation link:', confirmationUrl);
   }
