@@ -47,7 +47,7 @@ app.use(helmet());
 // https://your-domain.com for production).
 // ---------------------------------------------------------------------------
 const allowedOrigin =
-  process.env.FRONTEND_URL || "https://ai-powered-forum.yodhub.com/";
+  process.env.FRONTEND_URL || "https://ai-powered-forum.yodhub.com";
 app.use(
   cors({
     origin: allowedOrigin,
