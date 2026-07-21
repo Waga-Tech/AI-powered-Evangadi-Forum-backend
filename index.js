@@ -79,6 +79,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.get("/", (req, res) => {
+  res.json({ msg: "Evangadi Forum API is running", health: "/health" });
+});
 app.use('/api', mainRouter);
 
 // errorHandler must be registered last so it catches errors from all routes.
