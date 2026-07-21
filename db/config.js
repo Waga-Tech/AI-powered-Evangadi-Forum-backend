@@ -12,7 +12,7 @@ export const db = mysql.createPool({
   password: process.env.DB_PASSWORD || process.env.DB_PASS || "",
   database: process.env.DB_NAME || "evangadi_forum",
   ssl: {
-    ca: process.env.DB_CA_CERT.replace(/\\n/g, "\n"),
+    rejectUnauthorized: false,
   },
 });
 
