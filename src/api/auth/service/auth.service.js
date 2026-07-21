@@ -303,7 +303,7 @@ export const forgotPasswordService = async ({ email }) => {
     process.env.PASSWORD_RESET_EXPIRES_IN || '15m',
   );
 
-  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5001'}/auth?resetToken=${encodeURIComponent(resetToken)}`;
+  const resetUrl = `${process.env.FRONTEND_URL || 'https://ai-powered-forum.yodhub.com'}/auth?resetToken=${encodeURIComponent(resetToken)}`;
   if (process.env.NODE_ENV !== 'production') {
     console.info('[dev] Password reset link:', resetUrl);
   }
